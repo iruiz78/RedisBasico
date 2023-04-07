@@ -21,7 +21,7 @@ namespace ApiRedis.Controllers
         [HttpGet("{id}")]
         public Cliente Get(int id)
         {
-            var redisDb = new Redis();
+            var redisDb = new CacheCliente();
             var cli = redisDb.GetData($"Cliente-{id}");
             return cli;
         }
@@ -30,7 +30,7 @@ namespace ApiRedis.Controllers
         [HttpPost]
         public void Post([FromBody] Cliente value)
         {
-            var redisDb = new Redis();
+            var redisDb = new CacheCliente();
             redisDb.SetData($"Cliente-{value.Id}", value);
         }
 
@@ -44,6 +44,8 @@ namespace ApiRedis.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            var redisDb = new CacheCliente();
+            redisDb.DeleteData($"Cliente-{id}");
         }
     }
 }
