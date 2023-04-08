@@ -1,6 +1,7 @@
 ﻿using ApiRedis.Cache;
 using ApiRedis.Modelos;
 using Microsoft.AspNetCore.Mvc;
+using static ApiRedis.Enums;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,6 +11,11 @@ namespace ApiRedis.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
+        private readonly CacheClientes _redisDb;
+        public ClienteController()
+        {
+             _redisDb = new CacheClientes("localhost", (int)CacheBases.Clientes);
+        }
         // GET: api/<ClienteController>
         [HttpGet]
         public IEnumerable<Cliente> Get()
@@ -21,8 +27,7 @@ namespace ApiRedis.Controllers
         [HttpGet("{id}")]
         public Cliente Get(int id)
         {
-            var redisDb = new CacheCliente();
-            var cli = redisDb.GetData($"Cliente-{id}");
+            var cli = _redisDb.GetData($"Cliente-{id}");
             return cli;
         }
 
@@ -30,8 +35,7 @@ namespace ApiRedis.Controllers
         [HttpPost]
         public void Post([FromBody] Cliente value)
         {
-            var redisDb = new CacheCliente();
-            redisDb.SetData($"Cliente-{value.Id}", value);
+            _redisDb.SetData($"Cliente-{value.Id}", value);
         }
 
         // PUT api/<ClienteController>/5
@@ -44,8 +48,7 @@ namespace ApiRedis.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            var redisDb = new CacheCliente();
-            redisDb.DeleteData($"Cliente-{id}");
+            _redisDb.DeleteData($"Cliente-{id}");
         }
     }
 }
